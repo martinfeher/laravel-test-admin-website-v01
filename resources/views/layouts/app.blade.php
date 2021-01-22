@@ -34,8 +34,7 @@
 
     <script src="{{ asset('assets/libs/jquery/js/jquery-3.5.1.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap-4.5.3/js/bootstrap.min.js') }}"></script>
-{{--    <link href="/css/master.css" rel="stylesheet">--}}
-
+    <link href="{{ asset('css/master.css') }}">
     @yield('scripts')
 
 </body>

@@ -22,11 +22,11 @@
 @endsection
 
 @section('scripts')
-    <link href="/assets/lib/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
-    <script src="/assets/lib/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="/assets/lib/datatables-bs4/dataTables.bootstrap4.min.js"></script>
-    <script src="/assets/lib/datatables.net-responsive/dataTables.responsive.js"></script>
-    <script src="/assets/lib/datatables.net-responsive-bs4/responsive.bootstrap4.js"></script>
+    <link href="{{ asset("assets/libs/datatables/css/jquery.dataTables.min.css") }}" rel="stylesheet">
+    <script src="{{ asset("assets/libs/datatables/js/jquery.dataTables.min.js") }}"></script>
+    <script src="{{ asset("assets/libs/datatables-bs4/dataTables.bootstrap4.min.js") }}"></script>
+    <script src="{{ asset("assets/libs/datatables.net-responsive/dataTables.responsive.js") }}"></script>
+    <script src="{{ asset("assets/libs/datatables.net-responsive-bs4/responsive.bootstrap4.js") }}"></script>
     <script>
 
     $(document).ready(function() {
@@ -47,9 +47,7 @@
             "pageLength": 12,
             "ajax": {
                 "url": '/produkty/tabulka-data',
-                "data": {
-                    "tbl": tbl
-                }
+                "data": {}
             },
             "columns": [
                 {"data": "Nazov", "searchable": true, "className": "text-center text-wrap", "width": "40%"},

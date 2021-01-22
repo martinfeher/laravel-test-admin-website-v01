@@ -18,7 +18,6 @@ Route::get('/', function(){
         return redirect('/login');
     } else {
         return redirect('/produkty');
-//        return redirect('/home');
     }
 });
 
@@ -29,12 +28,9 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware' => ['auth']], function() {
 
     Route::get('/admin/user-management', 'UserManagementController@index'); // User Management stranka
-
     Route::get('/produkty', '\App\Http\Controllers\ProduktyController@index'); // produkty stranka
     Route::get('/produkty/tabulka-data', '\App\Http\Controllers\ProduktyController@tabulkaData'); // produkty tabulka data, ajax call
-
     Route::get('/objednavky', '\App\Http\Controllers\ObjednavkyController@index'); // objednavky stranka
-
 
     Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout'); // Logout link
 
