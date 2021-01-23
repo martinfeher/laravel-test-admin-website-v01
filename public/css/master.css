@@ -1,0 +1,34 @@
+div.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.5em 0;
+}
+
+div.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #FFF;
+}
+
+.main {
+    position: relative;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.sidenav {
+    position: absolute;
+    float: left;
+    width: 200px;
+}
+
+.content {
+    margin-left: 200px; /* Same width as the sidebar + left position in px */
+    padding: 0px 10px;
+}
+
+
+.h1, .h2, .h3, .h4, body, h1, h2, h3, h4, h5, h6 {
+    font-family: Roboto,Helvetica,Arial,sans-serif;
+    line-height: 1.5em;
+}
+
+table.dataTable tbody th, table.dataTable tbody td {
+    padding-top: 13px !important;
+}

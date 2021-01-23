@@ -1,5 +1,5 @@
 <nav>
-    <div>
+    <div class="sidenav">
 {{--        <ul class="navbar-nav flex-column">--}}
 {{--            <li class="nav-item">--}}
 {{--                <a class="nav-link dropdown-indicator" href="#monitoring" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="monitoring">--}}

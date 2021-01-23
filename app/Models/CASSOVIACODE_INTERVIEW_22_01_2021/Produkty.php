@@ -26,6 +26,8 @@ class Produkty extends Model
         'cena',
     ];
 
+
+
     protected $dates = [
         'created_at', 'update_at', 'deleted_at'
     ];

@@ -10,7 +10,7 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -19,6 +19,8 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/libs/bootstrap-4.5.3/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/master.css') }}" rel="stylesheet">
+
 </head>
 <body>
 
@@ -33,8 +35,8 @@
     </main>
 
     <script src="{{ asset('assets/libs/jquery/js/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/popper/js/popper.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap-4.5.3/js/bootstrap.min.js') }}"></script>
-    <link href="{{ asset('css/master.css') }}">
     @yield('scripts')
 
 </body>

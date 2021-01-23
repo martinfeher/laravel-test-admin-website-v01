@@ -30,16 +30,24 @@ class ProduktyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function datatables(Request $request)
+    public function tabulkaData(Request $request)
     {
 
-        $produkty = Produkty::all();
+        $produkty = Produkty::select('id', 'nazov', 'popis', 'cena')->get();
 
-        $tableData_ar = $produkty->toArray();
 
+        foreach($produkty as $key => $item) {
+            $item->id = $item->id === null ? '' : $item->id;
+            $item->radio_btn = "<input type=\"radio\" id=\"tbl_radio_btn_{$item->id}\" class=\"produkty_table_radio\" name=\"produkty_table_radio\" value=\"{$item->id}\" >";
+            $item->nazov = $item->nazov === null ? '' : $item->nazov;
+            $item->popis = $item->popis === null ? '' : $item->popis;
+            $item->cena = $item->cena === null ? '' : $item->cena;
+            $item->vymazat = "<button type=\"button\" class=\"btn btn-danger\">Vymazat</button>";
+        }
+//        $tableData_ar = $produkty->toArray();
 
         $output = [];
-        $output['data'] = $data;
+        $output['data'] = $produkty;
 
         return response()->json($output);
 
