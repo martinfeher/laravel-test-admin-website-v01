@@ -49,11 +49,25 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+
+        $validation_rules = [
+            'meno' => ['required', 'string', 'max:255'],
+            'email' => 'required', 'string', 'email', 'max:255', 'unique:users', 'regex:/^(?=.*?[A-Z])(?=.*?[.,#@!+-%&()_).{6,}$/',
+            'heslo' => ['required', 'string', 'min:8', 'confirmed'],
+            'rola' => ['required'],
+        ];
+
+        $validation_messages = [
+            'required' => ':attribute je potrebné vyplniť',
+            'max' => ':attribute musí mať maximálne :max symboly',
+            'min' => ':attribute musí mať minimálne :min symboly',
+            'unique' => ':attribute je už registrovaný ',
+            'confirmed' => 'Potvrdené heslo musí byť také isté ako Heslo',
+        ];
+
+        return Validator::make($data, $validation_rules, $validation_messages);
+
+
     }
 
     /**
@@ -64,10 +78,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+
         return User::create([
-            'name' => $data['name'],
+            'meno' => $data['meno'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => Hash::make($data['heslo']),
+            'rola' => $data['rola'],
         ]);
     }
 }

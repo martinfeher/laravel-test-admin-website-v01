@@ -23,14 +23,15 @@ Route::get('/', function(){
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::group(['middleware' => ['auth']], function() {
 
     Route::get('/admin/user-management', 'UserManagementController@index'); // User Management stranka
 
     Route::get('/produkty', '\App\Http\Controllers\ProduktyController@index'); // produkty stranka
-    Route::get('/produkty/tabulka-data', '\App\Http\Controllers\ProduktyController@tabulkaData'); // produkty tabulka data, ajax call
+    Route::get('/produkty/tabulka-data', '\App\Http\Controllers\ProduktyController@tabulkaData'); // produkty stranka tabulka data, ajax call
+    Route::get('/produkty/tabulka-pridat-data', '\App\Http\Controllers\ProduktyController@tabulkaPridatData'); // produkty stranka tabulka pridať riadok, ajax call
+    Route::get('/produkty/tabulka-vymazat-data', '\App\Http\Controllers\ProduktyController@tabulkaVymazatData'); // produkty stranka tabulka vymazať riadok, ajax call
 
     Route::get('/objednavky', '\App\Http\Controllers\ObjednavkyController@index'); // objednavky stranka
 

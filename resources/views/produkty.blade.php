@@ -28,8 +28,23 @@
         </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="addEditTableRow" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<!-- Potvrdit Vymazat Modal-->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmationModalLabel">Delete item</h5><button class="close" type="button" data-dismiss="modal" aria-label="Close"><span class="font-weight-light" aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <p class="confirm_delete_message" style="text-align: center;">Ste si istý, že si prajete vymazať produkt s id <span id="vymazat_id"></span>?</p>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Close</button><button id="confirmation-modal-delete-button" class="btn btn-danger btn-sm" type="button">delete</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- Pridat Editovat Modal -->
+<div class="modal fade" id="pridatEditovatTableData" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -39,40 +54,40 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="form-add-table-row-settings-accounts" class="modal-body pt-4 px-4 pb-2" method="POST">
+                <form class="modal-body pt-4 px-4 pb-2" method="POST">
                     @csrf
+                    <input value="" type="hidden" name="id" id="id" class="form-control modal-input col-md-7" maxlength="200">
                     <div class="form-group">
                         <div class="input-group">
                             <label for="nazov" class="col-form-label col-md-5">Názov:&nbsp;</label>
-                            <input value="" type="text" name="nazov" id="nazovID" class="form-control modal-input col-md-7" maxlength="200">
+                            <input value="" type="text" name="nazov" id="nazov" class="form-control modal-input col-md-7" maxlength="200">
                         </div>
-                        <div id="validation-info-nazov" class="offset-md-5 col-md-7 mt-2 p-1 validation-info" style="font-size: 0.9em;">prosím zadajte text, maximum 250 symbolov</div>
+                        <div id="validation-info-nazov" class="offset-md-5 col-md-7 mt-2 p-1 validation-info">potrebné vyplniť, prosím zadajte text, maximum 250 symbolov</div>
                         <div id="error-message-nazov" class="alert alert-danger error-message offset-md-5 col-md-7 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
                     </div>
                     <div class="form-group">
                         <div class="input-group">
                             <label for="popis" class="col-form-label col-md-5">Popis:&nbsp;</label>
-                            <textarea id="popis_textarea" name="popis_textarea" class="form-control" rows="5" cols="50" maxlength="5000" placeholder=""></textarea>
+                            <textarea id="popis" name="popis_textarea" class="form-control" rows="5" cols="50" maxlength="5000" placeholder=""></textarea>
                         </div>
-                        <div id="validation-info-popis" class="offset-md-5 col-md-7 mt-2 p-1 validation-info" style="font-size: 0.9em;">prosím zadajte text, maximum 5000 symbolov</div>
+                        <div id="validation-info-popis" class="offset-md-5 col-md-7 mt-2 p-1 validation-info">prosím zadajte text, maximum 5000 symbolov</div>
                         <div id="error-message-popis" class="alert alert-danger error-message offset-md-5 col-md-7 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
                     </div>
                     <div class="form-group">
                         <div class="input-group">
                             <label for="cena" class="col-form-label col-md-5">Cena:&nbsp;</label>
-                            <input value="" type="text" name="cena" id="cenaID" class="form-control modal-input col-md-7" maxlength="30">
+                            <input value="" type="text" name="cena" id="cena" class="form-control modal-input col-md-7" maxlength="11">
                         </div>
-                        <div id="validation-info-cena" class="offset-md-5 col-md-7 mt-2 p-1 validation-info" style="font-size: 0.9em;">prosím zadajte cenu</div>
+                        <div id="validation-info-cena" class="offset-md-5 col-md-7 mt-2 p-1 validation-info">potrebné vyplniť, prosím zadajte cenu</div>
                         <div id="error-message-cena" class="alert alert-danger error-message offset-md-5 col-md-7 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"data-dismiss="modal">Zatvoriť</button>
-                        <button type="button" class="btn btn-primary">Potvrdiť</button>
+                        <button type="button" id="potvrdit-pridat" class="btn btn-primary">Potvrdiť</button>
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
@@ -95,11 +110,94 @@
     }); // end document ready
 
     $(document).delegate("#pridat_btn", "click", function(e){
-        $('#addEditTableRow').modal('show');
+        $('#pridatEditovatTableData').modal('show');
+        $('.error-message').html('');
+    });
+
+    $(document).delegate("#edit_settings_accounts_row", "click", function(e){
+        let selected_account = $('input[name="produkty_table_radio"]:checked').val();
+    });
+
+    $(document).delegate("#potvrdit-pridat", "click", function(e){
+
+        // let id = $('#id').val();
+        let nazov = $('#nazov').val();
+        let popis = $('#popis').val();
+        let cena = $('#cena').val();
+
+        $.ajax({
+            url: "/produkty/tabulka-pridat-data",
+            type:'GET',
+            dataType: "json",
+            data: {
+                nazov: nazov,
+                popis: popis,
+                cena: cena,
+            },
+            success: function(data) {
+                if (data['status'] === undefined) {
+                    if (data['nazov'] !== undefined) {
+                        $('#error-message-nazov').html(data['nazov'][0]).fadeIn(700);
+                    } else {
+                        $('#error-message-nazov').html('');
+                    }
+                    if (data['popis'] !== undefined) {
+                        $('#error-message-popis').html(data['popis'][0]).fadeIn(700);
+                    } else {
+                        $('#error-message-popis').html('');
+                    }
+                    if (data['cena'] !== undefined) {
+                        $('#error-message-cena').html(data['cena'][0]).fadeIn(700);
+                    } else {
+                        $('#error-message-cena').html('');
+                    }
+
+                } else if (data.status === 'success') {
+                    console.log('2');
+                    $('.error-message').html('');
+                    $('#table-produkty').DataTable().row.add( {
+                        "id": data.id ,
+                        "radio_btn": "<input type=\"radio\" id=\"tbl_radio_btn_" + data.id + "\" class=\"produkty_table_radio\" name=\"produkty_table_radio\" value=\"" + data.id + "\" >",
+                        "nazov": nazov,
+                        "popis": popis,
+                        "cena": cena,
+                        "vymazat": "<button type=\"button\" data-id=\"" + data.id + "\" class=\"btn btn-danger\">Vymazat</button>",
+                    }).draw();
+                    $('#pridatEditovatTableData').modal('hide');
+                    $('#nazov').val('');
+                    $('#popis').val('');
+                    $('#cena').val('');
+                }
+            }
+        });
+    });
+
+    $(document).delegate(".vymazat_btn", "click", function(e){
+        let id = $(this).data("id");
+        $('#confirmationModal').modal('show');
+        $('#vymazat_id').html(id);
+        $(document).delegate("#confirmation-modal-delete-button", "click", function(e){
+            $('#confirmationModal').modal('hide');
+            $.ajax({
+                url: '/produkty/tabulka-vymazat-data',
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    id: id,
+                },
+                success: function (data) {
+                    if (data.status === 'success') {
+                        $('#table-produkty').DataTable().row("#produkt_id_" + id).remove().draw();
+                    }
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
     });
 
     function createTableDataClientSide() {
-
         let datatable = $('#table-produkty').DataTable({
             "lengthChange": false,
             "searching": false,
@@ -112,6 +210,9 @@
                     "previous": "Predchádzajúce",
                     "next": "Ďalšie"
                 }
+            },
+            "createdRow": function( row, data, dataIndex ) {
+                $(row).attr('id', 'produkt_id_' + data.id);
             },
             "ajax": {
                 "url": '/produkty/tabulka-data',
@@ -127,6 +228,9 @@
             ],
         });
     }
+
+
+
 
 </script>
 @endsection
