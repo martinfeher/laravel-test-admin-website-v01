@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\cassoviacode_interview_22_01_2021\Objednavky;
 use App\Models\cassoviacode_interview_22_01_2021\Produkty;
+use App\Models\MnoapiProdCluster\Settings\Helpline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -18,9 +20,7 @@ class ProduktyController extends Controller
      */
     public function index(Request $request)
     {
-
         return view('produkty');
-
     }
 
     /**
@@ -36,12 +36,12 @@ class ProduktyController extends Controller
         $produkty = Produkty::select('id', 'nazov', 'popis', 'cena')->get();
 
         foreach($produkty as $key => $item) {
-            $item->id = $item->id === null ? '' : $item->id;
             $item->radio_btn = "<input type=\"radio\" id=\"tbl_radio_btn_{$item->id}\" class=\"produkty_table_radio\" name=\"produkty_table_radio\" value=\"{$item->id}\" >";
             $item->nazov = $item->nazov === null ? '' : $item->nazov;
             $item->popis = $item->popis === null ? '' : $item->popis;
             $item->cena = $item->cena === null ? '' : $item->cena;
-            $item->vymazat = "<button type=\"button\" data-id=\"{$item->id}\" class=\"btn btn-danger vymazat_btn\">Vymazat</button>";
+            $item->vytvorit_objednavku = "<button type=\"button\" data-id=\"{$item->id}\" data-nazov=\"{$item->nazov}\" class=\"btn-sm btn-success vytvorit_objednavku_btn\">Vytvoriť objednávku</button>";
+            $item->vymazat = "<button type=\"button\" data-id=\"{$item->id}\" class=\"btn-sm btn-danger vymazat_btn\">Vymazať</button>";
         }
 
         $output = [];
@@ -49,7 +49,6 @@ class ProduktyController extends Controller
         return response()->json($output);
 
     }
-
 
 
     /**
@@ -63,15 +62,15 @@ class ProduktyController extends Controller
     {
 
         $validation_rules = [
-            'nazov' => 'required|max:2',
-            'popis' => 'max:2|',
-            'cena' => 'required|digits_between:2,3',
+            'nazov' => 'required|max:250',
+            'popis' => 'max:5000|',
+            'cena' => 'required|numeric',
         ];
 
         $validation_messages = [
             'required' => ':attribute je potrebné vyplniť',
             'max' => ':attribute musí mať maximálne :max symboly',
-            'digits_between' => ':attribute musí byť mať minimálne :min a maximálne :max',
+            'numeric' => ':attribute musí byť v číselnom formáte',
         ];
 
         $validator = Validator::make($request->all(), $validation_rules, $validation_messages);
@@ -91,6 +90,109 @@ class ProduktyController extends Controller
         return Response()->json([
             'status' => 'success',
             'id' => $id,
+        ], 200);
+
+    }
+
+
+    /**
+     * Produkty stranka, vratit data pre upravu riadku,
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function tabulkaUpravaData(Request $request)
+    {
+
+        if (!$request->has('id')) {
+            exit('not valid request');
+        }
+        $produkt = Produkty::find($request->id);
+
+        return response()->json($produkt);
+    }
+
+
+    /**
+     * Produkty stranka tabulka upravit riadok,
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function tabulkaUpravitData(Request $request)
+    {
+
+        if (!$request->has('id')) {
+            exit('not valid request');
+        }
+
+        $validation_rules = [
+            'nazov' => 'required|max:250',
+            'popis' => 'max:5000|',
+            'cena' => 'required|numeric',
+        ];
+
+        $validation_messages = [
+            'required' => ':attribute je potrebné vyplniť',
+            'max' => ':attribute musí mať maximálne :max symboly',
+            'numeric' => ':attribute musí byť v číselnom formáte',
+        ];
+
+        $validator = Validator::make($request->all(), $validation_rules, $validation_messages);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+
+        $produkt = Produkty::find($request->id);
+        $produkt->nazov = $request->nazov;
+        $produkt->popis = $request->popis;
+        $produkt->cena = $request->cena;
+
+        $produkt->save();
+
+        return Response()->json([
+            'status' => 'success',
+        ], 200);
+
+    }
+
+
+    /**
+     * Produkty stranka, vytvorit objednavku
+     * Ajax call
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function vytvoritObjednavku(Request $request)
+    {
+
+        $validation_rules = [
+            'nazov_objednavky' => 'required|max:250',
+            'popis_objednavky' => 'max:5000|',
+        ];
+
+        $validation_messages = [
+            'required' => ':attribute je potrebné vyplniť',
+            'max' => ':attribute musí mať maximálne :max symboly',
+        ];
+
+        $validator = Validator::make($request->all(), $validation_rules, $validation_messages);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 200);
+        }
+
+        $objednavky = new Objednavky();
+        $objednavky->nazov = $request->nazov_objednavky;
+        $objednavky->popis = $request->popis_objednavky;
+        $objednavky->produkty = $request->produkt_id;
+
+        $objednavky->save();
+
+        return Response()->json([
+            'status' => 'success'
         ], 200);
 
     }

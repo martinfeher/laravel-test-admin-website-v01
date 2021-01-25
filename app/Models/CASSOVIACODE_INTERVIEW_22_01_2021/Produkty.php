@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Produkty extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
 
     /** @var string  */
@@ -28,8 +27,6 @@ class Produkty extends Model
         'popis',
         'cena',
     ];
-
-
 
     protected $dates = [
         'created_at', 'update_at', 'deleted_at'

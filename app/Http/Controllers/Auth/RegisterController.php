@@ -29,7 +29,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::HOME;
+    protected $redirectTo = '/register';
 
     /**
      * Create a new controller instance.
@@ -52,8 +52,8 @@ class RegisterController extends Controller
 
         $validation_rules = [
             'meno' => ['required', 'string', 'max:255'],
-            'email' => 'required', 'string', 'email', 'max:255', 'unique:users', 'regex:/^(?=.*?[A-Z])(?=.*?[.,#@!+-%&()_).{6,}$/',
-            'heslo' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'heslo' => ['required', 'string', 'min:8', 'symbols', 'confirmed'],
             'rola' => ['required'],
         ];
 
@@ -62,7 +62,9 @@ class RegisterController extends Controller
             'max' => ':attribute musí mať maximálne :max symboly',
             'min' => ':attribute musí mať minimálne :min symboly',
             'unique' => ':attribute je už registrovaný ',
-            'confirmed' => 'Potvrdené heslo musí byť také isté ako Heslo',
+            'confirmed' => 'Potvrdené heslo musí byť rovnaké ako Heslo',
+            'symbols' => ':attribute musí mať minimálne jeden špeciálny symbol',
+//            'symbols' => ':attribute musí mať minimálne jeden špeciálny symbol" .,#@!+-%&()_',
         ];
 
         return Validator::make($data, $validation_rules, $validation_messages);

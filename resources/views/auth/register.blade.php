@@ -61,8 +61,11 @@
                             <label for="rola" class="col-md-4 col-form-label text-md-right">{{ __('Rola') }}</label>
                             <div class="col-md-6">
                                 <select name="rola" id="rola">
-                                    <option value="pouzivatel">používateľ</option>
-                                    <option value="admin">admin</option>
+                                    <option value="user">user</option>
+
+                                    @if(Auth::user()->jeAdministrator())
+                                        <option value="admin">admin</option>
+                                    @endif
                                 </select>
                                 @error('rola')
                                 <span class="invalid-feedback" role="alert">

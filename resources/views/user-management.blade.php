@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'User management')
+@section('title', 'User management | cassoviacode_interview_22-01-2021')
 
 @section('content')
 

@@ -24,6 +24,14 @@ table.dataTable tbody th, table.dataTable tbody td {
     padding-top: 13px !important;
 }
 
+table.dataTable tbody tr {
+    cursor: pointer;
+}
+
+/*.dataTables_filter {*/
+/*    float: left !important;*/
+/*}*/
+
 .validation-info {
     color: #707070;
     font-size: 0.84em;
@@ -45,4 +53,13 @@ div.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
     border: 1px solid #ced4da;
     border-radius: .25rem;
     transition: border-color .15s
+}
+
+button.upravit-btn-disabled {
+    opacity: 0.29;;
+    cursor: inherit;
+}
+
+.form-control {
+    line-height: 1.1;
 }
