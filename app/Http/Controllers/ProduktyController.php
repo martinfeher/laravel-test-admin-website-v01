@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\cassoviacode_interview_22_01_2021\Objednavky;
 use App\Models\cassoviacode_interview_22_01_2021\Produkty;
-use App\Models\MnoapiProdCluster\Settings\Helpline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -210,8 +209,8 @@ class ProduktyController extends Controller
         if (!$request->has('id')) {
             exit('not valid request');
         }
-        $ee_uk = Produkty::find($request->id);
-        $ee_uk->delete();
+        $produkt = Produkty::find($request->id);
+        $produkt->delete();
 
         return Response()->json([
             'status' => 'success',

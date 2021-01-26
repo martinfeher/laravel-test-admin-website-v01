@@ -1,3 +1,5 @@
+
+/* End General */
 .main {
     position: relative;
     font-size: 14px;
@@ -27,10 +29,6 @@ table.dataTable tbody th, table.dataTable tbody td {
 table.dataTable tbody tr {
     cursor: pointer;
 }
-
-/*.dataTables_filter {*/
-/*    float: left !important;*/
-/*}*/
 
 .validation-info {
     color: #707070;
@@ -63,3 +61,29 @@ button.upravit-btn-disabled {
 .form-control {
     line-height: 1.1;
 }
+.form_modal_wrapper {
+    padding: 11px 4px 0;
+}
+
+/* End General */
+
+/* Top Menu */
+
+
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    color: #5F5F5F;
+}
+
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    color: #5F5F5F;
+}
+
+.top_menu_meno {
+    color: #5F5F5F;
+}
+
+.top_menu_rola {
+    font-size: 0.7em;
+    color: #888;
+}
+/* End Top Menu */

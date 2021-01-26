@@ -10,8 +10,7 @@ use Illuminate\Support\Str;
 
 class Objednavky extends Model
 {
-    use HasFactory;
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     /**
      * Generate UUID on model creation
@@ -31,26 +30,43 @@ class Objednavky extends Model
     protected $table = 'objednavky';
 
     /** @var string  */
-    protected $connection = "cassoviacode_interview_22_01_2021_users";
+    protected $connection = "cassoviacode_interview_22_01_2021";
+
+    /** @var string  */
+    protected $keyType = 'string';
+
+    /** @var boolean  */
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
-     *
      * @var array
      */
     protected $fillable = [
         'nazov',
         'popis',
-        'cena',
-        'produkty',
+        'dokument_name',
+        'dokument_path',
     ];
 
+    /** @var array  */
     protected $dates = [
         'created_at', 'update_at', 'deleted_at'
     ];
 
+    /** @var array  */
     protected $casts = [
         'id' => 'string'
     ];
+
+    /**
+     * get produkty_id priradene ku objednavky_id
+     */
+
+    public function produkty()
+    {
+        return $this->hasMany(ProduktyObjednavkyPivot::Class, 'objednavky_id', 'id');
+    }
+
 
 }

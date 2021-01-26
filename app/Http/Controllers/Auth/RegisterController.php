@@ -62,7 +62,7 @@ class RegisterController extends Controller
             'max' => ':attribute musí mať maximálne :max symboly',
             'min' => ':attribute musí mať minimálne :min symboly',
             'unique' => ':attribute je už registrovaný ',
-            'confirmed' => 'Potvrdené heslo musí byť rovnaké ako Heslo',
+            'confirmed' => 'Potvrdené heslo musí byť rovnaké ako heslo',
             'symbols' => ':attribute musí mať minimálne jeden špeciálny symbol',
 //            'symbols' => ':attribute musí mať minimálne jeden špeciálny symbol" .,#@!+-%&()_',
         ];

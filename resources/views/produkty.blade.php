@@ -5,144 +5,146 @@
 @section('content')
 
 <div id="produkty">
-        <h5>Produkty</h5>
-        <br>
+    <h5>Produkty</h5>
+    <br>
+    <div>
         <div>
-            <div>
-                <button type="button" id="pridat_produkt_btn" class="btn btn-primary mr-1">Pridať produkt</button>
-                <button type="button" id="upravit_produkt_btn" class="btn btn-secondary upravit-btn-disabled">Upraviť produkt</button>
-            </div>
-            <br>
-            <table id="table-produkty" class="table">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>id</th>
-                    <th>Nazov</th>
-                    <th>Popis</th>
-                    <th>Cena</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-                </thead>
-            </table>
+            <button type="button" id="pridat_produkt_btn" class="btn btn-primary mr-1">Pridať produkt</button>
+            <button type="button" id="upravit_produkt_btn" class="btn btn-secondary upravit-btn-disabled">Upraviť produkt</button>
         </div>
-</div>
-
-<!-- Potvrdit Vymazat Modal-->
-<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmationModalLabel">Potvrdiť vymazanie</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span class="font-weight-light" aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <p class="confirm_delete_message" style="text-align: center;">Ste si istý, že si prajete vymazať produkt s id <span id="vymazat_id"></span>?</p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Zavrieť</button>
-                <button id="confirmation-modal-delete-button" class="btn btn-danger btn-sm" type="button">Vymazať</button>
+        <br>
+        <table id="table-produkty" class="table">
+            <thead>
+            <tr>
+                <th></th>
+                <th>id</th>
+                <th>Názov</th>
+                <th>Popis</th>
+                <th>Cena</th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <!-- Pridat Editovat Produkt Modal -->
+    <div class="modal fade" id="pridat_editovat_tabluka_modal" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pridat_produkt_modal_titulok">Pridať produkt</h5>
+                    <h5 class="modal-title" id="upravit_produkt_modal_titulok">Upraviť produkt</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="modal-body pt-2 pl-2 pb-1">
+                        <input type="hidden" name="id" id="id">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label for="nazov" class="col-form-label col-md-4">Názov:&nbsp;</label>
+                                <input value="" type="text" name="nazov" id="nazov" class="form-control modal-input col-md-8" maxlength="200">
+                            </div>
+                            <div id="validation-info-nazov" class="offset-md-4 col-md-8 p-1 validation-info">potrebné vyplniť, prosím zadajte text, maximum 250 symbolov</div>
+                            <div id="error-message-nazov" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label for="popis" class="col-form-label col-md-4">Popis:&nbsp;</label>
+                                <textarea id="popis" name="popis_textarea" class="form-control" rows="5" cols="50" maxlength="5000" placeholder=""></textarea>
+                            </div>
+                            <div id="validation-info-popis" class="offset-md-4 col-md-8 p-1 validation-info">prosím zadajte text, maximum 5000 symbolov</div>
+                            <div id="error-message-popis" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label for="cena" class="col-form-label col-md-4">Cena:&nbsp;</label>
+                                <input value="" type="text" name="cena" id="cena" class="form-control modal-input col-md-8" maxlength="11">
+                            </div>
+                            <div id="validation-info-cena" class="offset-md-4 col-md-8 p-1 validation-info">potrebné vyplniť, prosím zadajte cenu</div>
+                            <div id="error-message-cena" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"data-dismiss="modal">Zatvoriť</button>
+                            <button type="button" id="pridat-potvrdit-btn" class="btn btn-primary">Potvrdiť</button>
+                            <button type="button" id="upravit-potvrdit-btn" class="btn btn-primary">Upraviť</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Pridat Editovat Produkt Modal -->
-<div class="modal fade" id="pridat_editovat_tabluka_modal" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="pridat_produkt_modal_titulok">Pridať produkt</h5>
-                <h5 class="modal-title" id="upravit_produkt_modal_titulok">Upraviť produkt</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="modal-body pt-4 px-4 pb-2">
-                    <input type="hidden" name="id" id="id">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <label for="nazov" class="col-form-label col-md-4">Názov:&nbsp;</label>
-                            <input value="" type="text" name="nazov" id="nazov" class="form-control modal-input col-md-8" maxlength="200">
+    <!-- Vytvoriť Objednávku Modal -->
+    <div class="modal fade" id="vytvorit_objednavku_tabluka_modal" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="vytvorit_objednavku_modal_titulok">Vytvoriť Objednávku</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="modal-body pt-4 px-4 pb-2">
+                        <input type="hidden" name="id" id="id">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label for="nazovt_objednavky" class="col-form-label col-md-5">Názov Objednávky:</label>
+                                <input value="" type="text" name="nazov_objednavky" id="nazov_objednavky" class="form-control modal-input col-md-7" maxlength="200">
+                            </div>
+                            <div id="validation-info-nazov_objednavky" class="offset-md-5 col-md-7 p-1 validation-info">potrebné vyplniť, prosím zadajte text, maximum 250 symbolov</div>
+                            <div id="error-message-nazov_objednavky" class="alert alert-danger error-message offset-md-5 col-md-7 p-1" style="font-size: 0.9em; display:none;"></div>
                         </div>
-                        <div id="validation-info-nazov" class="offset-md-4 col-md-8 p-1 validation-info">potrebné vyplniť, prosím zadajte text, maximum 250 symbolov</div>
-                        <div id="error-message-nazov" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <label for="popis" class="col-form-label col-md-4">Popis:&nbsp;</label>
-                            <textarea id="popis" name="popis_textarea" class="form-control" rows="5" cols="50" maxlength="5000" placeholder=""></textarea>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label for="popis_objednavky" class="col-form-label col-md-5">Popis Objednávky:</label>
+                                <textarea id="popis_objednavky" name="popis_objednavky_textarea" class="form-control" rows="5" cols="50" maxlength="5000" placeholder=""></textarea>
+                            </div>
+                            <div id="validation-info-popis_objednavky" class="offset-md-5 col-md-7 p-1 validation-info">prosím zadajte text, maximum 5000 symbolov</div>
+                            <div id="error-message-popis_objednavky" class="alert alert-danger error-message offset-md-5 col-md-7 p-1" style="font-size: 0.9em; display:none;"></div>
                         </div>
-                        <div id="validation-info-popis" class="offset-md-4 col-md-8 p-1 validation-info">prosím zadajte text, maximum 5000 symbolov</div>
-                        <div id="error-message-popis" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <label for="cena" class="col-form-label col-md-4">Cena:&nbsp;</label>
-                            <input value="" type="text" name="cena" id="cena" class="form-control modal-input col-md-8" maxlength="11">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <label for="produkt_modal" class="col-form-label col-md-5">Produkt</label>
+                                <input value="" type="text" name="produkt_modal" id="produkt_modal" class="form-control modal-input col-md-7" maxlength="200" disabled>
+                            </div>
+                            <div id="validation-info-produkty" class="offset-md-5 col-md-7 p-1 validation-info">potrebné vyplniť, prosím zadajte cenu</div>
+                            <div id="error-message-produkty" class="alert alert-danger error-message offset-md-4 col-md-á mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
                         </div>
-                        <div id="validation-info-cena" class="offset-md-4 col-md-8 p-1 validation-info">potrebné vyplniť, prosím zadajte cenu</div>
-                        <div id="error-message-cena" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"data-dismiss="modal">Zatvoriť</button>
-                        <button type="button" id="pridat-potvrdit-btn" class="btn btn-primary">Potvrdiť</button>
-                        <button type="button" id="upravit-potvrdit-btn" class="btn btn-primary">Upraviť</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"data-dismiss="modal">Zatvoriť</button>
+                            <button type="button" id="vytvorit_objednavku_potvrdit-btn" class="btn btn-primary">Vytvoriť Objednávku</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Vytvoriť Objednávku Modal -->
-<div class="modal fade" id="vytvorit_objednavku_tabluka_modal" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="vytvorit_objednavku_modal_titulok">Vytvoriť Objednávku</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form class="modal-body pt-4 px-4 pb-2">
-                    <input type="hidden" name="id" id="id">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <label for="nazovt_objednavky" class="col-form-label col-md-5">Názov Objednávky:</label>
-                            <input value="" type="text" name="nazov_objednavky" id="nazov_objednavky" class="form-control modal-input col-md-7" maxlength="200">
-                        </div>
-                        <div id="validation-info-nazov_objednavky" class="offset-md-5 col-md-7 p-1 validation-info">potrebné vyplniť, prosím zadajte text, maximum 250 symbolov</div>
-                        <div id="error-message-nazov_objednavky" class="alert alert-danger error-message offset-md-5 col-md-7 p-1" style="font-size: 0.9em; display:none;"></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <label for="popis_objednavky" class="col-form-label col-md-5">Popis Objednávky:</label>
-                            <textarea id="popis_objednavky" name="popis_objednavky_textarea" class="form-control" rows="5" cols="50" maxlength="5000" placeholder=""></textarea>
-                        </div>
-                        <div id="validation-info-popis_objednavky" class="offset-md-5 col-md-7 p-1 validation-info">prosím zadajte text, maximum 5000 symbolov</div>
-                        <div id="error-message-popis_objednavky" class="alert alert-danger error-message offset-md-5 col-md-7 p-1" style="font-size: 0.9em; display:none;"></div>
-                    </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <label for="produkt_modal" class="col-form-label col-md-5">Produkt</label>
-                            <input value="" type="text" name="produkt_modal" id="produkt_modal" class="form-control modal-input col-md-7" maxlength="200" disabled>
-                        </div>
-                        <div id="validation-info-produkty" class="offset-md-5 col-md-7 p-1 validation-info">potrebné vyplniť, prosím zadajte cenu</div>
-                        <div id="error-message-produkty" class="alert alert-danger error-message offset-md-4 col-md-á mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"data-dismiss="modal">Zatvoriť</button>
-                        <button type="button" id="vytvorit_objednavku_potvrdit-btn" class="btn btn-primary">Vytvoriť Objednávku</button>
-                    </div>
-                </form>
+    <!-- Potvrdit Vymazat Modal-->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Potvrdiť vymazanie</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span class="font-weight-light" aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <p class="confirm_delete_message" style="text-align: center;">Ste si istý, že si prajete vymazať produkt s id <span id="vymazat_id"></span>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-sm" type="button" data-dismiss="modal">Zavrieť</button>
+                    <button id="confirmation-modal-delete-button" class="btn btn-danger btn-sm" type="button">Vymazať</button>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
+
+
 
 @endsection
 
@@ -163,22 +165,27 @@
         $('#upravit_produkt_modal_titulok').hide();
         $('#pridat-potvrdit-btn').show();
         $('#upravit-potvrdit-btn').hide();
+        $('#nazov').val('');
+        $('#popis').val('');
+        $('#cena').val('');
+        $('.error-message').html('').hide();
         $('#pridat_editovat_tabluka_modal').modal('show');
-        $('.error-message').html('');
     });
+
     $(document).delegate("#upravit_produkt_btn", "click", function(e){
         $('#upravit_produkt_modal_titulok').show();
         $('#pridat_produkt_modal_titulok').hide();
+        $('.error-message').html('').hide();
         $('#pridat_editovat_tabluka_modal').modal('show');
-        $('.error-message').html('');
     });
+
     $(document).delegate(".vytvorit_objednavku_btn", "click", function(e){
         $('#vytvorit_objednavku_tabluka_modal').modal('show');
         let id = $(this).data('id');
         let nazov = $(this).data('nazov');
         $('#produkt_modal').val('id: ' + id + ', ' + nazov);
         $('#vytvorit_objednavku_potvrdit-btn').attr('data-produkt_id', String(id));
-        $('.error-message').html('');
+        $('.error-message').html('').hide();
     });
 
     $(document).delegate("#pridat-potvrdit-btn", "click", function(e){
@@ -212,17 +219,8 @@
                         $('#error-message-cena').html('');
                     }
                 } else if (data.status === 'success') {
-                    console.log('2');
-                    $('.error-message').html('');
-                    $('#table-produkty').DataTable().row.add( {
-                        "id": data.id ,
-                        "radio_btn": "<input type=\"radio\" id=\"tbl_radio_btn_" + data.id + "\" class=\"produkty_table_radio\" name=\"produkty_table_radio\" value=\"" + data.id + "\" >",
-                        "nazov": nazov,
-                        "popis": popis,
-                        "cena": cena,
-                        "vytvorit_objednavku": "<button type=\"button\" data-id=\"" + data.id + "\" class=\"btn btn-secondary vytvorit_objednavku_btn\">Vytvoriť objednávku</button>",
-                        "vymazat": "<button type=\"button\" data-id=\"" + data.id + "\" class=\"btn btn-danger\">Vymazat</button>",
-                    }).draw();
+                    $('.error-message').html('').hide();
+                    let datatable = vytvoritTabulku();
                     $('#pridat_editovat_tabluka_modal').modal('hide');
                     $('#nazov').val('');
                     $('#popis').val('');
@@ -236,7 +234,7 @@
         let id = $('input[name="produkty_table_radio"]:checked').val();
         $('#upravit-potvrdit-btn').show();
         $('#pridat-potvrdit-btn').hide();
-        $('.error-message').html('');
+        $('.error-message').html('').hide();
         $.ajax({
             url: '/produkty/tabulka-uprava-data',
             method: 'GET',
@@ -291,7 +289,7 @@
                     }
                 } else if (data.status === 'success') {
                     $('#pridat_editovat_tabluka_modal').modal('hide');
-                    $('.error-message').html('');
+                    $('.error-message').html('').hide();
                     let datatable = vytvoritTabulku();
                     datatable.on('draw', function () {
                         $('#tbl_radio_btn_' + id).prop('checked', true);
@@ -305,7 +303,7 @@
         let nazov_objednavky = $('#nazov_objednavky').val();
         let popis_objednavky = $('#popis_objednavky').val();
         let produkt_id = $(this).data('produkt_id');
-        $('.error-message').html('');
+        $('.error-message').html('').hide();
         $.ajax({
             url: '/produkty/vytvorit-objednavku',
             method: 'GET',
@@ -399,13 +397,13 @@
                 "data": {}
             },
             "columns": [
-                {"data": "radio_btn", "title": "", "orderable": false, "className": "text-center text-wrap radio_btn", "width": "5%"},
-                {"data": "id", "title": "id", "orderable": true, "className": "text-center text-wrap", "width": "5%"},
-                {"data": "nazov","title": "Nazov", "orderable": true, "className": "text-center text-wrap", "width": "10%"},
-                {"data": "popis","title": "Popis", "orderable": true, "className": "text-center text-wrap", "width": "20%"},
-                {"data": "cena", "title": "Cena", "orderable": true, "className": "text-center text-wrap", "width": "15%"},
-                {"data": "vytvorit_objednavku", "title": "", "orderable": false, "className": "text-center text-wrap", "width": "15%"},
-                {"data": "vymazat", "title": "", "orderable": false, "className": "text-center text-wrap", "width": "10%"},
+                {"data": "radio_btn", "title": "", "orderable": false, "searchable": false, "className": "text-center text-wrap radio_btn", "width": "5%"},
+                {"data": "id", "title": "id", "orderable": true, "searchable": true, "className": "text-center text-wrap", "width": "5%"},
+                {"data": "nazov","title": "Názov", "orderable": true, "searchable": true, "className": "text-center text-wrap", "width": "10%"},
+                {"data": "popis","title": "Popis", "orderable": true, "searchable": true, "className": "text-center text-wrap", "width": "20%"},
+                {"data": "cena", "title": "Cena", "orderable": true, "searchable": true, "className": "text-center text-wrap", "width": "15%"},
+                {"data": "vytvorit_objednavku", "title": "", "orderable": false, "searchable": false, "className": "text-center text-wrap", "width": "15%"},
+                {"data": "vymazat", "title": "", "orderable": false, "searchable": false, "className": "text-center text-wrap", "width": "10%"},
             ],
         });
 

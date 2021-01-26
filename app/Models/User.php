@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use \Spatie\WelcomeNotification\ReceivesWelcomeNotification;
 
 class User extends Authenticatable
 {
@@ -17,7 +18,7 @@ class User extends Authenticatable
     protected $table = 'users';
 
     /** @var string  */
-    protected $connection = "cassoviacode_interview_22_01_2021_users";
+    protected $connection = "cassoviacode_interview_22_01_2021";
 
 
     /**
@@ -51,9 +52,25 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /** @var array  */
+    protected $dates = [
+        'created_at', 'update_at', 'deleted_at'
+    ];
+
 
     /**
-     * Test, ci je prihlaseny uzivatel administrator
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getVytvorenyAttribute()
+    {
+        return "{$this->created_at->format('Y-m-d H:i:s')} ";
+    }
+
+
+    /**
+     * Test, ci je prihlaseny uzivatel Administrator
      *
      */
     public function jeAdministrator() {

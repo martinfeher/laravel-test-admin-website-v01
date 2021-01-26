@@ -35,7 +35,7 @@ return [
 
     'connections' => [
 
-        'cassoviacode_interview_22_01_2021_users' => [
+        'cassoviacode_interview_22_01_2021' => [
             'driver'    => 'mysql',
             'host'      => 'localhost',
             'database'  => 'cassoviacode_interview_22_01_2021',

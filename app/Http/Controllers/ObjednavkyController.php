@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\cassoviacode_interview_22_01_2021\Objednavky;
 use App\Models\cassoviacode_interview_22_01_2021\Produkty;
-use App\Models\MnoapiProdCluster\Settings\Helpline;
+use App\Models\cassoviacode_interview_22_01_2021\ProduktyObjednavkyPivot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 
 class ObjednavkyController extends Controller
@@ -35,17 +36,25 @@ class ObjednavkyController extends Controller
     public function tabulkaData(Request $request)
     {
 
-        $objednavky = Objednavky::select('id', 'nazov', 'popis', 'produkty')->get();
+        if(Auth::user()->jeAdministrator()) {
+            $objednavky = Objednavky::select('id', 'nazov', 'popis', 'dokument_name')->get();
+        } else {
+            $objednavky = Objednavky::select('id', 'nazov', 'popis', 'dokument_name')
+                ->where('user_id', Auth::user()->id)
+                ->get();
+        }
+
+        $objednavky = $objednavky->load('produkty');
 
         foreach($objednavky as $key => $item) {
+
             $item->radio_btn = "<input type=\"radio\" id=\"tbl_radio_btn_{$item->id}\" class=\"objednavky_table_radio\" name=\"objednavky_table_radio\" value=\"{$item->id}\" >";
             $item->nazov = $item->nazov === null ? '' : $item->nazov;
             $item->popis = $item->popis === null ? '' : $item->popis;
-            $item->produkty = $item->produkty === null ? '' : $item->produkty;
+            $item->produkty_zoznam = $item->produkty()->pluck('produkty_id')->implode(',');
+            $item->dokument_name = $item->dokument_name === null ? '' : $item->dokument_name;
             $item->vymazat = "<button type=\"button\" data-id=\"{$item->id}\" data-nazov=\"{$item->nazov}\" class=\"btn-sm btn-danger vymazat_btn\">Vymazať</button>";
         }
-
-//        dd($objednavky);
 
         $output = [];
         $output['data'] = $objednavky;
@@ -67,8 +76,7 @@ class ObjednavkyController extends Controller
         $validation_rules = [
             'nazov' => 'required|max:250',
             'popis' => 'max:5000|',
-            'produkty' => 'required|numeric',
-            'image_upload' => 'mimes:jpg, png, doc, docx, pdf',
+            'dokument_upload' => 'mimes:jpg, png, doc, docx, pdf',
         ];
 
         $validation_messages = [
@@ -84,26 +92,33 @@ class ObjednavkyController extends Controller
             return response()->json($validator->messages(), 200);
         }
 
-        $objednavky = new Objednavky();
+        $objednavky = new Objednavky;
         $objednavky->nazov = $request->nazov;
         $objednavky->popis = $request->popis;
-        $objednavky->produkty = $request->produkty;
 
-        if ($request->hasfile('image_upload')) {
-            $filenameWithExt = $request->file('image_upload')->getClientOriginalName();
+        $dokument_name = '';
+        if ($request->hasfile('dokument_upload')) {
+            $filenameWithExt = $request->file('dokument_upload')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('image_upload')->getClientOriginalExtension();
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-            $path = $request->file('image_upload')->storeAs('public/uploads', $fileNameToStore);
-            $objednavky->dokument_path = $path;
+            $extension = $request->file('dokument_upload')->getClientOriginalExtension();
+            $dokument_name = $filename . '_' . time() . '.' . $extension;
+            $dokument_path = $request->file('dokument_upload')->storeAs('public/uploads', $dokument_name);
+            $objednavky->dokument_name = $dokument_name;
+            $objednavky->dokument_path = $dokument_path;
         }
 
         $objednavky->save();
         $id = $objednavky->id;
 
+        $produkty_objednavky_pivot = New ProduktyObjednavkyPivot;
+        $produkty_objednavky_pivot->produkty_id = $request->produkty;
+        $produkty_objednavky_pivot->objednavky_id = $id;
+        $produkty_objednavky_pivot->save();
+
         return Response()->json([
             'status' => 'success',
             'id' => $id,
+            'dokument_name' => $dokument_name,
         ], 200);
 
     }
@@ -121,9 +136,9 @@ class ObjednavkyController extends Controller
         if (!$request->has('id')) {
             exit('not valid request');
         }
-        $objednavk = Objednavky::find($request->id);
+        $objednavky = Objednavky::find($request->id);
 
-        return response()->json($objednavk);
+        return response()->json($objednavky);
     }
 
 
@@ -143,13 +158,14 @@ class ObjednavkyController extends Controller
         $validation_rules = [
             'nazov' => 'required|max:250',
             'popis' => 'max:5000|',
-            'produkty' => 'required|numeric',
+            'dokument_upload' => 'mimes:jpg, png, doc, docx, pdf',
         ];
 
         $validation_messages = [
             'required' => ':attribute je potrebné vyplniť',
             'max' => ':attribute musí mať maximálne :max symboly',
             'numeric' => ':attribute musí byť v číselnom formáte',
+            'mimes' => ':attribute nahratý súbor musí byť v jednom z týchto formátov jpg, png, doc, docx, pdf ',
         ];
 
         $validator = Validator::make($request->all(), $validation_rules, $validation_messages);
@@ -161,7 +177,17 @@ class ObjednavkyController extends Controller
         $objednavka = Objednavky::find($request->id);
         $objednavka->nazov = $request->nazov;
         $objednavka->popis = $request->popis;
-        $objednavka->produkty = $request->produkty;
+
+        $dokument_name = '';
+        if ($request->hasfile('dokument_upload')) {
+            $filenameWithExt = $request->file('dokument_upload')->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $request->file('dokument_upload')->getClientOriginalExtension();
+            $dokument_name = $filename . '_' . time() . '.' . $extension;
+            $dokument_path = $request->file('dokument_upload')->storeAs('public/uploads', $dokument_name);
+            $objednavka->dokument_name = $dokument_name;
+            $objednavka->dokument_path = $dokument_path;
+        }
 
         $objednavka->save();
 
@@ -184,8 +210,8 @@ class ObjednavkyController extends Controller
         if (!$request->has('id')) {
             exit('not valid request');
         }
-        $ee_uk = Objednavky::find($request->id);
-        $ee_uk->delete();
+        $objednavka = Objednavky::find($request->id);
+        $objednavka->delete();
 
         return Response()->json([
             'status' => 'success',
