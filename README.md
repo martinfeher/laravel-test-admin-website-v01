@@ -38,3 +38,4 @@ Po vypracovaní zadania ma prosím informujte a poskytnem Vám repozitár na com
 - git clone https://github.com/martinfeher/Cassoviacode_interview_22-01-2021.git
 - cd repository
 - composer install
+- (additional/ dodatočné) .env file, database structure file can be sent on request / vhodný .env súbor, súbor so štruktúrou databázy je zaslaný na požiadanie
