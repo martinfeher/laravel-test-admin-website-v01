@@ -37,6 +37,7 @@ return [
 
         'cassoviacode_interview_22_01_2021' => [
             'driver'    => 'mysql',
+//            'host'      => '127.0.0.1',
             'host'      => '164.68.97.117',
             'database'  => 'cassoviacode_interview_22_01_2021',
             'username'  => env('DB_CASSOVIACODE_INTERVIEW_22_01_2021_USERNAME'),
