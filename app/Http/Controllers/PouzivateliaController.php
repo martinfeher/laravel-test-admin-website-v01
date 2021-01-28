@@ -53,7 +53,7 @@ class PouzivateliaController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaVymazatData(Request $request)
+    public function vymazatData(Request $request)
     {
         if (!$request->has('id')) {
             exit('not valid request');

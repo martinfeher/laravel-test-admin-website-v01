@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\cassoviacode_interview_22_01_2021\Objednavky;
 use App\Models\cassoviacode_interview_22_01_2021\Produkty;
+use App\Models\cassoviacode_interview_22_01_2021\ProduktyObjednavkyPivot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -57,7 +58,7 @@ class ProduktyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaPridatData(Request $request)
+    public function pridatZaznam(Request $request)
     {
 
         $validation_rules = [
@@ -100,7 +101,7 @@ class ProduktyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaUpravaData(Request $request)
+    public function dataPreUpravuZaznamu(Request $request)
     {
 
         if (!$request->has('id')) {
@@ -118,7 +119,7 @@ class ProduktyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaUpravitData(Request $request)
+    public function upravitZaznam(Request $request)
     {
 
         if (!$request->has('id')) {
@@ -186,9 +187,14 @@ class ProduktyController extends Controller
         $objednavky = new Objednavky();
         $objednavky->nazov = $request->nazov_objednavky;
         $objednavky->popis = $request->popis_objednavky;
-        $objednavky->produkty = $request->produkt_id;
 
         $objednavky->save();
+
+
+        $produkty_objednavky_pivot = ProduktyObjednavkyPivot::firstOrCreate([
+            'produkty_id' => $request->produkt_id,
+            'objednavky_id' => $objednavky->id
+        ]);
 
         return Response()->json([
             'status' => 'success'
@@ -204,7 +210,7 @@ class ProduktyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaVymazatData(Request $request)
+    public function vymazatData(Request $request)
     {
         if (!$request->has('id')) {
             exit('not valid request');

@@ -21,6 +21,9 @@
                 <th>Popis</th>
                 <th>Produkty</th>
                 <th>Dokument</th>
+                @if(Auth::user()->jeAdministrator())
+                <th>User_id</th>
+                @endif
                 <th></th>
             </tr>
             </thead>
@@ -57,7 +60,7 @@
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <label for="pridat_produkty" class="col-form-label col-md-4">Produkt:&nbsp;</label>
+                                <label for="pridat_produkty" class="col-form-label col-md-4">Pridať produkt:&nbsp;</label>
                                 <select name="produkty" id="pridat_produkty">
                                     @foreach($produkty as $produkt)
                                         <option value="{{ $produkt->id }}">{{ $produkt->id }} - {{ $produkt->nazov }}</option>
@@ -70,7 +73,7 @@
                         <br>
                         <div class="form-group">
                             <div class="input-group">
-                                <label for="pridat_dokument_upload" class="col-form-label col-md-4">Nahrať dokument:&nbsp;</label>
+                                <label for="pridat_dokument_upload" class="col-form-label col-md-4">Pridať dokument:&nbsp;</label>
                                 <input type="file" name="dokument_upload" id="pridat_dokument_upload" class="form-control modal-input col-md-8">
                                 <div id="pridat_validation-info-dokument_upload" class="offset-md-4 col-md-8 p-1 validation-info">prosím nahrajte dokument v jednom z týchto formátov JPG, PNG, DOC, DOCX, PDF</div>
                                 <div id="pridat_error-message-dokument_upload" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
@@ -122,7 +125,7 @@
                         </div>
                         <div class="form-group">
                             <div class="input-group">
-                                <label for="upravit_produkty" class="col-form-label col-md-4">Produkt:&nbsp;</label>
+                                <label for="upravit_produkty" class="col-form-label col-md-4">Pridať produkt:&nbsp;</label>
                                 <select name="produkty" id="upravit_produkty">
                                     @foreach($produkty as $produkt)
                                         <option value="{{ $produkt->id }}">{{ $produkt->id }} - {{ $produkt->nazov }}</option>
@@ -131,11 +134,15 @@
                             </div>
                             <div id="upravit_validation-info-produkty" class="offset-md-4 col-md-8 p-1 validation-info">potrebné vyplniť, prosím vyberte produkt</div>
                             <div id="upravit_error-message-produkty" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
+                            <div class="input-group">
+                                <label for="upravit_pridane_produkty" class="col-form-label col-md-4">Pridané produkty:&nbsp;</label>
+                                <input type="text" name="pridane_produkty" id="upravit_pridane_produkty" class="form-control modal-input col-md-8" disabled="disabled">
+                            </div>
                         </div>
                         <br>
                         <div class="form-group">
                             <div class="input-group">
-                                <label for="upravit_dokument_upload" class="col-form-label col-md-4">Nahrať dokument:&nbsp;</label>
+                                <label for="upravit_dokument_upload" class="col-form-label col-md-4">Pridať dokument:&nbsp;</label>
                                 <input type="file" name="dokument_upload" id="upravit_dokument_upload" class="form-control modal-input col-md-8">
                                 <div id="upravit_validation-info-dokument_upload" class="offset-md-4 col-md-8 p-1 validation-info">prosím nahrajte dokument v jednom z týchto formátov JPG, PNG, DOC, DOCX, PDF</div>
                                 <div id="upravit_error-message-dokument_upload" class="alert alert-danger error-message offset-md-4 col-md-8 mt-2 p-1" style="font-size: 0.9em; display:none;"></div>
@@ -205,7 +212,7 @@
             e.preventDefault();
             let formData = new FormData(this);
             $.ajax({
-                url: "/objednavky/tabulka-pridat-data",
+                url: "/objednavky/pridat-zaznam",
                 type:'POST',
                 data: formData,
                 dataType:'json',
@@ -240,7 +247,7 @@
                         $('#pridat_tabluka_modal').modal('hide');
                         $('#pridat_nazov').val('');
                         $('#pridat_popis').val('');
-                        $('#pridat_produkty').val('');
+                        $('#pridane_produkty').val('');
                         $('#pridat_dokument_name').val('');
                     }
                 }
@@ -249,33 +256,14 @@
 
         $(document).delegate("#upravit_objednavku_btn", "click", function(e){
             let id = $('input[name="objednavky_table_radio"]:checked').val();
-            $.ajax({
-                url: '/objednavky/tabulka-uprava-data',
-                method: 'GET',
-                dataType: 'json',
-                data: {
-                    id: id,
-                },
-                success: function (data) {
-                    $('#upravit_id').val(id);
-                    $('#upravit_nazov').val(data.nazov);
-                    $('#upravit_popis').val(data.popis);
-                    $('#upravit_produkty').val(data.produkty);
-                    $('#upravit_dokument_name').val(data.dokument_name);
-                    $('#upravit_tabluka_modal').modal('show');
-                    $('.error-message').html('').hide();
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
+            upravitObjednavku(id);
         });
 
         $('#upravit_tabluka_form').submit(function(e) {
             e.preventDefault();
             let formData = new FormData(this);
             $.ajax({
-                url: "/objednavky/tabulka-upravit-data",
+                url: "/objednavky/upravit-zaznam",
                 type:'POST',
                 data: formData,
                 dataType:'json',
@@ -316,6 +304,7 @@
             });
         });
 
+
         $(document).delegate("#table-objednavky tr", "click", function(e){
             let id = $(this).data('id');
             $('#tbl_radio_btn_' + id).prop('checked', true);
@@ -326,6 +315,11 @@
             radio_btn_state = 1;
         });
 
+        $(document).delegate("#table-objednavky tr", "dblclick", function(e){
+            let id = $(this).data('id');
+            upravitObjednavku(id);
+        });
+
         $(document).delegate(".vymazat_btn", "click", function(e){
             let id = $(this).data("id");
             let nazov = $(this).data("nazov");
@@ -334,7 +328,7 @@
             $(document).delegate("#confirmation-modal-delete-button", "click", function(e){
                 $('#confirmationModal').modal('hide');
                 $.ajax({
-                    url: '/objednavky/tabulka-vymazat-data',
+                    url: '/objednavky/vymazat-data',
                     method: 'GET',
                     dataType: 'json',
                     data: {
@@ -351,6 +345,29 @@
                 });
             });
         });
+
+        function upravitObjednavku(id) {
+            $.ajax({
+                url: '/objednavky/data-pre-upravu-zaznamu',
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    id: id,
+                },
+                success: function (data) {
+                    $('#upravit_id').val(id);
+                    $('#upravit_nazov').val(data.nazov);
+                    $('#upravit_popis').val(data.popis);
+                    $('#upravit_pridane_produkty').val(data.pridane_produkty);
+                    $('#upravit_dokument_name').val(data.dokument_name);
+                    $('#upravit_tabluka_modal').modal('show');
+                    $('.error-message').html('').hide();
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
 
         function vytvoritTabulku() {
             $('#table-objednavky').DataTable().clear().destroy();
@@ -378,10 +395,13 @@
                 },
                 "columns": [
                     {"data": "radio_btn", "title": "", "orderable": false, "className": "text-center text-wrap radio_btn", "width": "10%"},
-                    {"data": "nazov","title": "Názov", "orderable": true, "className": "text-left text-wrap", "width": "20%"},
-                    {"data": "popis","title": "Popis", "orderable": true, "className": "text-center text-wrap", "width": "20%"},
-                    {"data": "produkty_zoznam", "title": "Produkty", "orderable": true, "className": "text-center text-wrap", "width": "20%"},
-                    {"data": "dokument_name", "title": "Dokument", "orderable": false, "className": "text-center text-wrap", "width": "20%"},
+                    {"data": "nazov","title": "Názov", "orderable": true, "className": "text-left text-wrap", "width": "17%"},
+                    {"data": "popis","title": "Popis", "orderable": true, "className": "text-center text-wrap", "width": "17%"},
+                    {"data": "pridane_produkty", "title": "Produkty", "orderable": true, "className": "text-center text-wrap", "width": "17%"},
+                    {"data": "dokument_name", "title": "Dokument", "orderable": false, "className": "text-center text-wrap", "width": "17%"},
+                    @if(Auth::user()->jeAdministrator())
+                    {"data": "user_id", "title": "User_id", "orderable": false, "className": "text-center text-wrap", "width": "10%"},
+                    @endif
                     {"data": "vymazat", "title": "", "orderable": false, "className": "text-center text-wrap", "width": "10%"},
                 ],
             });

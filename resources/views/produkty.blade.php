@@ -141,7 +141,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 
@@ -160,6 +159,7 @@
     $(document).ready(function() {
         let datatable = vytvoritTabulku();
     });
+
     $(document).delegate("#pridat_produkt_btn", "click", function(e){
         $('#pridat_produkt_modal_titulok').show();
         $('#upravit_produkt_modal_titulok').hide();
@@ -193,7 +193,7 @@
         let popis = $('#popis').val();
         let cena = $('#cena').val();
         $.ajax({
-            url: "/produkty/tabulka-pridat-data",
+            url: "/produkty/pridat-zaznam",
             type:'GET',
             dataType: "json",
             data: {
@@ -232,27 +232,7 @@
 
     $(document).delegate("#upravit_produkt_btn", "click", function(e){
         let id = $('input[name="produkty_table_radio"]:checked').val();
-        $('#upravit-potvrdit-btn').show();
-        $('#pridat-potvrdit-btn').hide();
-        $('.error-message').html('').hide();
-        $.ajax({
-            url: '/produkty/tabulka-uprava-data',
-            method: 'GET',
-            dataType: 'json',
-            data: {
-                id: id,
-            },
-            success: function (data) {
-                $('#id').val(id);
-                $('#nazov').val(data.nazov);
-                $('#popis').val(data.popis);
-                $('#cena').val(data.cena);
-                $('#pridat_editovat_tabluka_modal').modal('show');
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
+        upravitProdukt(id)
     });
 
     $(document).delegate("#upravit-potvrdit-btn", "click", function(e){
@@ -261,7 +241,7 @@
         let popis = $('#popis').val();
         let cena = $('#cena').val();
         $.ajax({
-            url: "/produkty/tabulka-upravit-data",
+            url: "/produkty/upravit-zaznam",
             type:'GET',
             dataType: "json",
             data: {
@@ -344,7 +324,7 @@
         $(document).delegate("#confirmation-modal-delete-button", "click", function(e){
             $('#confirmationModal').modal('hide');
             $.ajax({
-                url: '/produkty/tabulka-vymazat-data',
+                url: '/produkty/vymazat-data',
                 method: 'GET',
                 dataType: 'json',
                 data: {
@@ -371,6 +351,35 @@
         }
         radio_btn_state = 1;
     });
+
+    $(document).delegate("#table-produkty tr", "dblclick", function(e){
+        let id = $(this).data('id');
+        upravitProdukt(id);
+    });
+
+    function upravitProdukt(id) {
+        $('#upravit-potvrdit-btn').show();
+        $('#pridat-potvrdit-btn').hide();
+        $('.error-message').html('').hide();
+        $.ajax({
+            url: '/produkty/data-pre-upravu-zaznamu',
+            method: 'GET',
+            dataType: 'json',
+            data: {
+                id: id,
+            },
+            success: function (data) {
+                $('#id').val(id);
+                $('#nazov').val(data.nazov);
+                $('#popis').val(data.popis);
+                $('#cena').val(data.cena);
+                $('#pridat_editovat_tabluka_modal').modal('show');
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
 
     function vytvoritTabulku() {
         $('#table-produkty').DataTable().clear().destroy();

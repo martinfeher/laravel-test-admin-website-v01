@@ -53,7 +53,7 @@ class RegisterController extends Controller
         $validation_rules = [
             'meno' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'heslo' => ['required', 'string', 'min:8', 'symbols', 'confirmed'],
+            'heslo' => ['required', 'string', 'min:8', 'case_diff', 'symbols', 'confirmed'],
             'rola' => ['required'],
         ];
 

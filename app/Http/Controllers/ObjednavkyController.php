@@ -36,8 +36,8 @@ class ObjednavkyController extends Controller
     public function tabulkaData(Request $request)
     {
 
-        if(Auth::user()->jeAdministrator()) {
-            $objednavky = Objednavky::select('id', 'nazov', 'popis', 'dokument_name')->get();
+        if (Auth::user()->jeAdministrator()) {
+            $objednavky = Objednavky::select('id', 'nazov', 'popis', 'user_id', 'dokument_name')->get();
         } else {
             $objednavky = Objednavky::select('id', 'nazov', 'popis', 'dokument_name')
                 ->where('user_id', Auth::user()->id)
@@ -51,7 +51,7 @@ class ObjednavkyController extends Controller
             $item->radio_btn = "<input type=\"radio\" id=\"tbl_radio_btn_{$item->id}\" class=\"objednavky_table_radio\" name=\"objednavky_table_radio\" value=\"{$item->id}\" >";
             $item->nazov = $item->nazov === null ? '' : $item->nazov;
             $item->popis = $item->popis === null ? '' : $item->popis;
-            $item->produkty_zoznam = $item->produkty()->pluck('produkty_id')->implode(',');
+            $item->pridane_produkty = $item->produkty()->pluck('produkty_id')->implode(',');
             $item->dokument_name = $item->dokument_name === null ? '' : $item->dokument_name;
             $item->vymazat = "<button type=\"button\" data-id=\"{$item->id}\" data-nazov=\"{$item->nazov}\" class=\"btn-sm btn-danger vymazat_btn\">Vymazať</button>";
         }
@@ -70,7 +70,7 @@ class ObjednavkyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaPridatData(Request $request)
+    public function pridatZaznam(Request $request)
     {
 
         $validation_rules = [
@@ -110,10 +110,11 @@ class ObjednavkyController extends Controller
         $objednavky->save();
         $id = $objednavky->id;
 
-        $produkty_objednavky_pivot = New ProduktyObjednavkyPivot;
-        $produkty_objednavky_pivot->produkty_id = $request->produkty;
-        $produkty_objednavky_pivot->objednavky_id = $id;
-        $produkty_objednavky_pivot->save();
+
+        $produkty_objednavky_pivot = ProduktyObjednavkyPivot::firstOrCreate([
+            'produkty_id' => $request->produkty,
+            'objednavky_id' => $id
+        ]);
 
         return Response()->json([
             'status' => 'success',
@@ -125,30 +126,34 @@ class ObjednavkyController extends Controller
 
 
     /**
-     * Objednavky stranka, vratit data pre upravu riadku,
+     * Objednavky stranka, vratit data pre upravu zaznamu
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaUpravaData(Request $request)
+    public function dataPreUpravuZaznamu(Request $request)
     {
 
         if (!$request->has('id')) {
             exit('not valid request');
         }
-        $objednavky = Objednavky::find($request->id);
 
-        return response()->json($objednavky);
+        $objednavka = Objednavky::find($request->id);
+
+        $objednavka = $objednavka->load('produkty');
+        $objednavka->pridane_produkty = $objednavka->produkty()->pluck('produkty_id')->implode(',');
+
+        return response()->json($objednavka);
     }
 
 
     /**
-     * Objednavky stranka tabulka upravit riadok,
+     * Objednavky stranka upravit zaznam
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaUpravitData(Request $request)
+    public function upravitZaznam(Request $request)
     {
 
         if (!$request->has('id')) {
@@ -191,6 +196,12 @@ class ObjednavkyController extends Controller
 
         $objednavka->save();
 
+        $produkty_objednavky_pivot = ProduktyObjednavkyPivot::firstOrCreate([
+                'produkty_id' => $request->produkty,
+                'objednavky_id' => $request->id
+            ]);
+
+
         return Response()->json([
             'status' => 'success',
         ], 200);
@@ -199,13 +210,13 @@ class ObjednavkyController extends Controller
     }
 
     /**
-     * Objednavky stranka tabulka vymazať riadok,
+     * Objednavky stranka tabulka vymazať zaznam
      * Ajax call
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function tabulkaVymazatData(Request $request)
+    public function vymazatData(Request $request)
     {
         if (!$request->has('id')) {
             exit('not valid request');

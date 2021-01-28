@@ -61,7 +61,7 @@
         $(document).delegate("#confirmation-modal-delete-button", "click", function(e){
             $('#confirmationModal').modal('hide');
             $.ajax({
-                url: '/pouzivatelia/tabulka-vymazat-data',
+                url: '/pouzivatelia/vymazat-data',
                 method: 'GET',
                 dataType: 'json',
                 data: {
