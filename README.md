@@ -28,7 +28,12 @@
 Po vypracovaní zadania ma prosím informujte a poskytnem Vám repozitár na commitnutie kódu.
 </p>
 
-###Inštalácia
+
+###Požiadavky/Requirements
+- PHP version/verzia >= 7.3
+- Composer dependency manager. Inštalácia/Installation: https://getcomposer.org/download/
+
+###Inštalácia/Installation
 
 - git clone https://github.com/martinfeher/Cassoviacode_interview_22-01-2021.git
 - cd cassoviacode_interview_22-01-2021
