@@ -34,7 +34,7 @@ Po vypracovaní zadania ma prosím informujte a poskytnem Vám repozitár na com
 - Composer dependency manager. Inštalácia/Installation: https://getcomposer.org/download/
 
 ###Inštalácia/Installation
-
+- mkdir repository
 - git clone https://github.com/martinfeher/Cassoviacode_interview_22-01-2021.git
-- cd cassoviacode_interview_22-01-2021
+- cd repository
 - composer install
