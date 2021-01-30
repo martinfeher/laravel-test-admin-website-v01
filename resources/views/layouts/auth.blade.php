@@ -18,6 +18,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/libs/bootstrap-4.5.3/css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/master.css') }}" rel="stylesheet">
 </head>
 <body>
 
@@ -31,9 +32,9 @@
         </div>
     </main>
 
-    <script src="/assets/js/jquery.min.js"></script>
-    <script src="/assets/js/bootstrap.min.js"></script>
-    <link href="/css/master.css" rel="stylesheet">
+    <script src="{{ asset('assets/libs/jquery/js/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/popper/js/popper.min.js') }}"></script>
+    <script src="{{ asset('assets/libs/bootstrap-4.5.3/js/bootstrap.min.js') }}"></script>
 
     @yield('scripts')
 
