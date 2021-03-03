@@ -1,4 +1,4 @@
-### Cassoviacode interview zadanie 22.01.2021
+### laravel admin website test, ukazka kodu
 - autor: Martin Fehér
 
 ###Zadavie:
