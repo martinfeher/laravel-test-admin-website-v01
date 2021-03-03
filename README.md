@@ -1,9 +1,7 @@
 ### laravel admin website test, ukážka kódu v 01
 - autor: Martin Fehér
 
-###Zadavie:
-<p>
-Špecifikácia pre zadanie v Laravel frameworku:
+Ukážka admin website zóna v Laravel php frameworku:
 
 * 2 typy účtov - user a admin
 
