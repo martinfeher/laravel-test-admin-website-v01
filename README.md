@@ -33,7 +33,7 @@ Po vypracovaní zadania ma prosím informujte a poskytnem Vám repozitár na com
 
 ###Inštalácia/Installation
 - mkdir repository
-- git clone https://github.com/martinfeher/Cassoviacode_interview_22-01-2021.git
+- git clone https://github.com/martinfeher/laravel-test-admin-website-v01.git
 - cd repository
 - composer install
 - php artisan cache:clear; php artisan config:cache;
