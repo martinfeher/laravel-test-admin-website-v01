@@ -1,4 +1,4 @@
-### laravel admin website test, ukazka kodu
+### laravel admin website test, ukážka kódu
 - autor: Martin Fehér
 
 ###Zadavie:
